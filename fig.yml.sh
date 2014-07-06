@@ -22,6 +22,8 @@ yads:
     - "8000:8000"
   links:
     - db:db
+  environment:
+    - REUSE_DB=1
 tests:
   image: yads
   user: $(id -u)

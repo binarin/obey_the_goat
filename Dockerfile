@@ -1,7 +1,6 @@
 FROM binarin/docker-python3.4
-RUN pip install https://www.djangoproject.com/download/1.7c1/tarball/
-RUN pip install selenium
-RUN apt-get install -y libpq-dev
-RUN pip install psycopg2
-RUN pip install django-nose
+ADD apt-requirements.txt /tmp/apt-requirements.txt
+RUN apt-get install -y $(cat /tmp/apt-requirements.txt)
+ADD python-requirements.txt /tmp/python-requirements.txt
+RUN pip install -r /tmp/python-requirements.txt
 EXPOSE 8000

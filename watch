@@ -1,0 +1,9 @@
+#!/bin/bash
+
+fig run --rm yads watchmedo shell-command \
+    --patterns="*.py" \
+    --recursive \
+    --command='REUSE_DB=1 ./manage.py test' \
+    --wait \
+    --ignore-patterns="*/.*" \
+    .
