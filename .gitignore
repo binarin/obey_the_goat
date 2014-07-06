@@ -1,2 +1,3 @@
 *.pyc
 yads/db.sqlite3
+/fig.yml
