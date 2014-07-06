@@ -13,9 +13,9 @@ selenium:
     - HOME=/tmp
 yads:
   build: .
-  user: ${UID}
-  working_dir: ${PWD}
-  command: ./yads/manage.py runserver 0.0.0.0:8000
+  user: $(id -u)
+  working_dir: ${PWD}/yads
+  command: ./manage.py runserver 0.0.0.0:8000
   volumes:
     - ${PWD}:${PWD}
   ports:
@@ -24,7 +24,7 @@ yads:
     - db:db
 tests:
   image: yads
-  user: ${UID}
+  user: $(id -u)
   working_dir: ${PWD}
   links:
     - selenium:selenium
