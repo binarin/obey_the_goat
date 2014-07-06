@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run --env=HOME=/tmp/ --rm -i -t -u $(id -u) -v $(pwd):$(pwd) -w $(pwd) ${DOCKER_EXTRA_ARGS} yads "$@"

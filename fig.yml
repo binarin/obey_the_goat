@@ -1,0 +1,22 @@
+selenium:
+  build: docker/selenium
+  privileged: true
+  user: daemon
+  environment:
+    - HOME=/tmp
+yads:
+  image: yads
+  user: 1000
+  command: bash -c "cd /code && ./yads/manage.py runserver 0.0.0.0:8000"
+  volumes:
+    - .:/code
+  ports:
+    - "8000:8000"
+tests:
+  image: yads
+  user: 1000
+  links:
+    - selenium:selenium
+    - yads:yads
+  volumes:
+    - .:/code
