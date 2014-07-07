@@ -1,7 +1,7 @@
 #!/bin/bash
 
 fig run --rm yads watchmedo shell-command \
-    --patterns="*.py" \
+    --patterns="*.py;*.html" \
     --recursive \
     --command='REUSE_DB=1 ./manage.py test' \
     --wait \
