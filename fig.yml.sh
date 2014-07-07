@@ -25,7 +25,7 @@ yads:
   environment:
     - REUSE_DB=1
 tests:
-  image: yads
+  build: .
   user: $(id -u)
   working_dir: ${PWD}
   links:
