@@ -5,11 +5,23 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from os import environ as env
 import unittest
+from datetime import datetime
 
 
 class SeleniumMixin:
+    @staticmethod
+    def screenshot_on_fail(func):
+        def wrapper(self, *args, **kwargs):
+            try:
+                func(self, *args, **kwargs)
+            except:
+                self.take_screenshot = True
+                raise
+        return wrapper
+
     def setUp(self):
         super().setUp()
+        self.take_screenshot = False
         self.url = 'http://{}:{}'.format(
             env['YADS_PORT_8000_TCP_ADDR'],
             env['YADS_PORT_8000_TCP_PORT'],
@@ -24,11 +36,15 @@ class SeleniumMixin:
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
+        if self.take_screenshot:
+            now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            self.browser.get_screenshot_as_file('screenshot-%s.png' % now)
         self.browser.quit()
         super().tearDown()
 
 
 class NewVisitorTest(SeleniumMixin, unittest.TestCase):
+    @SeleniumMixin.screenshot_on_fail
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes to check
         # out it's homepage.
@@ -56,15 +72,26 @@ class NewVisitorTest(SeleniumMixin, unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy peacock feathers' for row in rows)
+        self.assertIn(
+            '1: Buy peacock feathers', [row.text for row in rows]
         )
 
         # There is still a text box inviting her to add another item. She
         # enters "Use peacock feathers to make a fly" (Edith is very
         # methodical)
+        input_box = self.browser.find_element_by_id('id_new_item')
+        input_box.send_keys("Use peacock feathers to make a fly")
+        input_box.send_keys(Keys.ENTER)
 
         # The page updates again, and now shows both items on her list.
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(
+            '1: Buy peacock feathers', [row.text for row in rows]
+        )
+        self.assertIn(
+            '2: Use peacock feathers to make a fly', [row.text for row in rows]
+        )
 
         # Edith wonders whether the site will remember her list. The she sees
         # that the site has generated a unique URL for her -- there is some
