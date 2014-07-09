@@ -1,0 +1,5 @@
+- [X] Code smell: POST test is too long?
+- [X] Don't save blank items for every request
+- [ ] Display multiple items in the table
+- [ ] Support more than one list!
+- [ ] Make FT cleanup after itself
