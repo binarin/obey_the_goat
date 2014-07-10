@@ -22,6 +22,7 @@ yads:
     - "8000:8000"
   links:
     - db:db
+    - selenium:selenium
   environment:
     - REUSE_DB=1
 tests:

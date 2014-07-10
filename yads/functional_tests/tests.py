@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -22,10 +23,6 @@ class SeleniumMixin:
     def setUp(self):
         super().setUp()
         self.take_screenshot = False
-        self.url = 'http://{}:{}'.format(
-            env['YADS_PORT_8000_TCP_ADDR'],
-            env['YADS_PORT_8000_TCP_PORT'],
-        )
         self.browser = webdriver.Remote(
             'http://{}:{}/wd/hub'.format(
                 env['SELENIUM_PORT_4444_TCP_ADDR'],
@@ -43,7 +40,7 @@ class SeleniumMixin:
         super().tearDown()
 
 
-class NewVisitorTest(SeleniumMixin, unittest.TestCase):
+class NewVisitorTestCase(SeleniumMixin, LiveServerTestCase):
     def check_for_row_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
@@ -53,7 +50,7 @@ class NewVisitorTest(SeleniumMixin, unittest.TestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes to check
         # out it's homepage.
-        self.browser.get(self.url)
+        self.browser.get(self.live_server_url)
 
         # She notices the page title and header mention to-do list
         self.assertIn('To-Do', self.browser.title)
@@ -96,7 +93,3 @@ class NewVisitorTest(SeleniumMixin, unittest.TestCase):
 
         # Satisfied, she goes back to sleep.
         self.fail("Finish the test!")
-
-
-if __name__ == '__main__':
-    unittest.main()
