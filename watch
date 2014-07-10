@@ -3,7 +3,7 @@
 fig run --rm yads watchmedo shell-command \
     --patterns="*.py;*.html" \
     --recursive \
-    --command='REUSE_DB=1 ./manage.py test' \
+    --command='REUSE_DB=1 ./manage.py test lists' \
     --wait \
     --ignore-patterns="*/.*" \
     .
